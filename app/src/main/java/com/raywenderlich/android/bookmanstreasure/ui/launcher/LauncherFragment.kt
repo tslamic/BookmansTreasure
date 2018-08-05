@@ -38,6 +38,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.raywenderlich.android.bookmanstreasure.R
 
 class LauncherFragment : Fragment(), LifecycleObserver {
@@ -56,7 +58,19 @@ class LauncherFragment : Fragment(), LifecycleObserver {
     viewModel = ViewModelProviders.of(this).get(LauncherViewModel::class.java)
 
     viewModel.favouriteCount.observe(this, Observer {
-      //TODO implement navigating to Search or Favourites
+      if (it ?: 0 > 0) {
+        findNavController().navigate(
+            R.id.actionFavourites,
+            null,
+            NavOptions.Builder().setClearTask(true).build()
+        )
+      } else {
+        findNavController().navigate(
+            R.id.actionBookSearch,
+            null,
+            NavOptions.Builder().setClearTask(true).build()
+        )
+      }
     })
   }
 

@@ -28,47 +28,39 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.bookmanstreasure.ui.booksearch
+package com.raywenderlich.android.bookmanstreasure.destinations
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
-import android.arch.paging.LivePagedListBuilder
-import android.arch.paging.PagedList
-import com.raywenderlich.android.bookmanstreasure.api.OpenLibraryApi
-import com.raywenderlich.android.bookmanstreasure.data.SearchCriteria
-import com.raywenderlich.android.bookmanstreasure.source.NetworkState
-import com.raywenderlich.android.bookmanstreasure.source.WorkDataSourceFactory
+import android.os.Bundle
+import android.support.v4.app.FragmentManager
+import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
+import com.raywenderlich.android.bookmanstreasure.ui.authordetails.AuthorDetailsDialog
 
-class BookSearchViewModel : ViewModel() {
+
+@Navigator.Name("author")
+class AuthorDetailsNavigator(
+    private val manager: FragmentManager
+) : Navigator<AuthorDetailsNavigator.Destination>() {
+
   companion object {
-    private const val PAGE_SIZE = 100
+    const val TAG = "author_details"
   }
 
-  private val workDataSourceFactory = WorkDataSourceFactory(
-      OpenLibraryApi.create()
-  )
+  override fun navigate(destination: Destination, args: Bundle?, navOptions: NavOptions?) {
+    val dialogFragment = AuthorDetailsDialog()
+    dialogFragment.arguments = args
 
-  private val pagingConfig = PagedList.Config.Builder()
-      .setPageSize(PAGE_SIZE)
-      .setPrefetchDistance(PAGE_SIZE)
-      .setEnablePlaceholders(true)
-      .build()
-
-  val data = LivePagedListBuilder(workDataSourceFactory, pagingConfig)
-      .build()
-
-  val networkState: LiveData<NetworkState> = Transformations.switchMap(workDataSourceFactory.sourceLiveData) {
-    it.networkState
+    dialogFragment.show(manager, TAG)
   }
 
-  fun updateSearchTerm(searchTerm: String) {
-    workDataSourceFactory.searchTerm.postValue(searchTerm)
-    workDataSourceFactory.sourceLiveData.value?.invalidate()
+  override fun createDestination(): Destination {
+    return Destination(this)
   }
 
-  fun updateSearchCriteria(searchCriteria: SearchCriteria) {
-    workDataSourceFactory.searchCriteria.postValue(searchCriteria)
-    workDataSourceFactory.sourceLiveData.value?.invalidate()
+  override fun popBackStack(): Boolean {
+    return false
   }
+
+  class Destination(dialogFragmentNavigator: AuthorDetailsNavigator) : NavDestination(dialogFragmentNavigator)
 }

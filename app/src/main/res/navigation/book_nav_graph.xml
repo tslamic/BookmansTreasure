@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (c) 2018 Razeware LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,11 +27,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/splash"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.launcher.LauncherFragment">
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/bookDetailsGraph"
+  app:startDestination="@id/workDetailsFragment">
 
-</android.support.constraint.ConstraintLayout>
+  <action
+    android:id="@+id/actionShowAuthor"
+    app:destination="@id/authorDetails" />
+
+  <fragment
+    android:id="@+id/workDetailsFragment"
+    android:name="com.raywenderlich.android.bookmanstreasure.ui.workdetails.WorkDetailsFragment"
+    android:label="work_details_fragment"
+    tools:layout="@layout/fragment_work_details">
+    <action
+      android:id="@+id/actionShowEdition"
+      app:destination="@id/bookDetailsFragment" />
+
+  </fragment>
+
+  <fragment
+    android:id="@+id/bookDetailsFragment"
+    android:name="com.raywenderlich.android.bookmanstreasure.ui.bookdetails.BookDetailsFragment"
+    android:label="book_details_fragment"
+    tools:layout="@layout/fragment_book_details" />
+
+  <author
+    android:id="@+id/authorDetails" />
+
+</navigation>
